@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Speed-Modulated Ironing: High-Resolution Shade and Texture Gradients in Single-Material 3D Printing</title>
+    <!-- Bootstrap -->
+    <link href="html_resources/css/bootstrap-4.4.1.css" rel="stylesheet">
+  </head>
+  <body>
+<section>
+  <div class="jumbotron text-center mt-2">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h1>Speed-Modulated Ironing: High-Resolution Shade and Texture Gradients in Single-Material 3D Printing</h1>
+       
+              <p><a href="https://www.tudelft.nl/en/ide/about-ide/people/ozdemir-m">Mehmet Ozdemir</a>, Delft University of Technology, Netherlands <br>
+                <a href="http://www.malalawi.info"> Marwa AlAlawi</a>, MIT CSAIL, United States <br>
+                <a href="https://www.dogadogan.com"> Mustafa Doga Dogan</a>, MIT CSAIL, United States and Boğaziçi University, Turkey <br>
+                <a href="https://josemartinezcastro.com/about"> Jose Francisco Martinez Castro</a>, Delft University of Technology, Netherlands <br>
+                <a href="https://hcie.csail.mit.edu/stefanie-mueller.html"> Stefanie Mueller</a>, MIT CSAIL, United States <br>
+              <a href="https://www.tudelft.nl/en/ide/about-ide/people/doubrovski-el"> Zjenja Doubrovski</a>, Delft University of Technology, Netherlands</p>
+<p><a class="btn btn-primary btn-lg" href="html_resources/ironing.pdf" role="button">pdf</a> <a class="btn btn-primary btn-lg" href="https://doi.org/10.1145/3654777.3676456" role="button">doi</a> <a class="btn btn-primary btn-lg" href="https://github.com/zjenjad/speed-modulated-ironing" role="button">github</a></p>
+			 <p class="col-12"><em style="font-size: small; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">Mehmet Ozdemir, Marwa AlAlawi, Mustafa Doga Dogan, Jose Francisco Martinez Castro, Stefanie Mueller, and Zjenja Doubrovski. 2024. Speed-Modulated Ironing: High-Resolution Shade and Texture Gradients in Single-Material 3D Printing. In Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology (UIST '24). Association for Computing Machinery, New York, NY, USA. <a href="https://doi.org/10.1145/3654777.3676456">https://doi.org/10.1145/3654777.3676456</a>
+			  </em></p>
+            </div>
+          </div>
+        </div>
+  </div>
+  </section>
+    <section>
+<video width="100%" controls="controls" muted="muted" autoplay="autoplay" loop="loop" >
+    <source src="html_resources/ironing.mp4" type="video/mp4">
+    </video>
+    </section>
+<section>
+  <div class="container">
+        <div class="row">
+          <div class="col-12 text-center">
+            <p><h3>Speed-Modulated Ironing: High-Resolution Shade and Texture Gradients in Single-Material 3D Printing</h3></p>
+            <p><strong>We present Speed-Modulated Ironing, a new fabrication method for programming visual and tactile properties in single-material 3D printing. We use one nozzle to 3D print and a second nozzle to reheat printed areas at varying speeds, controlling the material's temperature response. The rapid adjustments of speed allow for fine-grained reheating, enabling high-resolution color and texture variations. We implemented our method in a tool that allows users to assign desired properties to 3D models and creates corresponding 3D printing instructions. We demonstrate our method with three temperature-responsive materials: a foaming filament, a filament with wood fibers, and a filament with cork particles. These filaments respond to temperature by changing color, roughness, transparency, and gloss. Our technical evaluation reveals the capabilities of our method in achieving sufficient resolution and color shade range that allows surface details such as small text, photos, and QR codes on 3D-printed objects. Finally, we provide application examples demonstrating the new design capabilities enabled by Speed-Modulated Ironing.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <hr>
+<section>
+  <div class="container">
+    <div class="row">
+          <div class="col-12 text-center">
+            <img src="html_resources/images/uist24-133-fig1.jpg" width="900"  alt=""/>
+            
+            <p><em>Figure 1: Speed-Modulated Ironing is a novel 3D printing technique for FDM 3D printers to continuously program visual and tactile properties at a high resolution. It works by using one nozzle to lay down the filament, followed by the second nozzle that activates the temperature response of the material by "ironing" the printed layer at varying speeds, changing the achieved property. Our method can be used for different temperature-responsive filaments.</em></p>
+          </div>
+</div>
+</div>
+</section>
+<hr>
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h2>1. Introduction</h2>
+<p>Material extrusion 3D printing is becoming a widespread technology that is being used for an increasing number of applications. With the ultimate goal of fabricating 3D objects in one go, researchers and makers aspire towards the ability of 3D printers to process parts with multiple properties&nbsp;[2]. Printing parts with different colors, textures, and other visual properties and doing so at a high resolution is essential for many applications.</p>
+    <p>For multi-color or multi-property printing, the standard workflow is to use multiple materials, each with their own properties&nbsp;[12]. However, in this approach, a material can only be assigned to a discrete region in the 3D print, making it impossible to assign values "in-between" and to fabricate graded transitions. Other methods include a pre-processing of the filament prior to 3D printing &nbsp;[14] or mixing materials in the nozzle &nbsp;[30], all of which require additional hardware or printer modifications. Alternatively, approaches based on using the temperature response of some specific filaments have been proposed. These include foaming filaments &nbsp;[19] and wood-filled filaments &nbsp;[16]. With these materials, heat can be used to locally vary the resulting properties during printing. In existing work, the printing nozzle temperature is used to vary, for example, the color or roughness of the printed part. However, nozzle temperature cannot be rapidly changed, which significantly limits the resolution of the achievable property variations.</p>
+    <p>Eliminating the dependency on the slow nozzle temperature change and allowing high-resolution, fine-grained control of visual and tactile properties, we present <em>Speed-Modulated Ironing</em>. Our novel method works by using one nozzle of an unmodified dual-extruder 3D printer to <em>lay down the filament</em> and the second nozzle to <em>control the temperature response</em> by passing over the deposited layer, exposing it to varying levels of heat. The key idea that enables continuous property variations is to vary the heat the second nozzle applies by modulating its speed rather than the slow heating and cooling of the nozzle. The rapid changes in the applied heat also allow for high-resolution variations in the resulting properties. We present a design tool that implements <em>Speed-Modulated Ironing</em>, and a user interface that allows users to assign desired visual and tactile properties to 3D models, which, on export, are converted into 3D printing process instructions (gcode) for <em>Speed-Modulated Ironing</em>.</p>
+    <p>We discuss results from our technical evaluation that provide insight into how the ironing parameters, temperature, and speed influence the achieved variations in properties. Finally, we provide application examples that demonstrate the new design capabilities enabled by <em>Speed-Modulated Ironing</em>, such as single-material objects with varying color shade, translucency, and tactile texture across their surface.</p>
+    <p>Our main contributions are summarized as follows:</p>
+    <ul class="list-no-style">
+      <li id="list1" label="•">a fabrication technique, called <em>Speed-Modulated Ironing</em>, that enables <em>continuous</em> programming of temperature-responsive filaments to provide fine-grained control over visual and tactile properties of objects 3D-printed with a single material.<br>
+      </li>
+      <li id="list2" label="•">a design tool that allows the assignment of these properties to 3D models for <em>Speed-Modulated Ironing</em>.<br>
+      </li>
+      <li id="list3" label="•">a set of applications with continuously varying properties created with our design tool.<br>
+      </li>
+      <li id="list4" label="•">a technical evaluation of how ironing parameters relate to achievable details and property variations.<br>
+      </li>
+    </ul>
+</div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h2>2. Related Work</h2>
+            <p>Our work is related to multi-property FDM 3D printing, leveraging material response to 3D printing parameters, and modified 3D printing strategies.</p>
+<h3>2.1 Multi-Property FDM 3D Printing</h3>
+		    <p>3D printed objects that result from FDM 3D printing typically only have a limited number of material properties since each extruder can only be assigned a single material at a time. To overcome this limitation, researchers investigated how to fabricate gradients of different materials. For instance, researchers showed how to create gradient color by interleaving black and white filaments to create grayscale images&nbsp;[11, 24]. A different approach to fabricating gradients of different materials is to use custom hardware that feeds multiple filaments into a single mixing nozzle at varying rates&nbsp;[7, 25]. Since different print temperatures and print speeds required by different materials limit what materials can be mixed together, Takahashi et al. proposed to pre-fabricate a filament that consists of individual segments made from different materials&nbsp;[15, 29]. While this allows for a more diverse range of materials, the filaments need to be prefabricated for each individual 3D-printed object. Addressing this issue, <em>Mosaic</em> provides a custom hardware add-on that can assemble a filament from different filament spools on the fly depending on the 3D model that is being printed<sup>1</sup>. However, the properties of the 3D-printed object are still limited to the number of spools the hardware can process in one print job.</p>
+<h3>2.2 Leveraging Material Response to 3D Printing Parameters</h3>
+<p>The 3D print quality, surface finish, and mechanical properties of FDM printed parts are dependent on process parameters (e.g., nozzle temperature, print speed) and slicing settings (e.g., layer height, line width, infill density, and type) [6, 23]. Thus, these parameters allow controlling certain properties of the printed part, such as strength and toughness [10, 27], or shape memory [20, 26].</p>
+       
+            <p>While the previously mentioned works use common filaments to program material properties, there are also filaments with additives that can be triggered by heat to obtain a significant and visible response. For example, filaments with wood particles become darker when printed at a higher temperature and have been used to vary color shade in a print&nbsp;[16]. Another category is foaming filaments&nbsp;[9, 18]. These filaments contain a foaming agent that, when extruded, expands the material volume into a closed-cell foam structure. The properties of the 3D printed foam depend on the heat applied, which, when varied, can produce various visual and haptic&nbsp;[19], as well as mechanical properties&nbsp;[3, 4, 21]. While researchers have presented strategies to apply such filaments at different states in 3D printed objects, all of the strategies rely on using the relatively slow temperature change of the printing nozzle. This leads to limited freedom and resolution in locally varying properties. We discuss these challenges in more detail in Section&nbsp;3. </p>
+            <div class="text-center"><img src="html_resources/images/uist24-133-fig2.jpg" width="900"  alt=""/>
+              <p><em>Figure 2: The process of the <em>Speed-Modulated Ironing</em>. A) Printing: One layer of material is deposited at a low temperature by the first nozzle. B) Programming: After the layer is printed, the second nozzle irons over the layer at a high but constant temperature. By varying the ironing speed, the amount of reheating and, therefore, activation of the material is controlled. C) Thermal camera image of the <em>Speed-Modulated Ironing</em>&nbsp;process. One region is ironed at a low speed, significantly re-heating the printed layer. Another region is ironed at a high speed, not visibly reheating the layer. The nozzle temperature and nozzle height are kept constant. D) A print with a color gradient image is fabricated with our method.</em></p>
+            </div>
+<h3>2.3 Modified 3D Printing Strategies</h3>
+            <p>To expand the capabilities of 3D printers, researchers have developed a number of custom 3D printing strategies. For instance, <em>WirePrint</em>&nbsp;[17] moves the print head along the z-axis to create toolpaths that 3D print the objects as a wireframe for fast prototyping. <em>Furbrication</em>&nbsp;[13] uses rapid movements of the print head to create hair-like structures by leveraging the stringing properties of the filament. <em>DefeXtiles</em>&nbsp;[5] uses different rates of under-extrusion to produce textile-like structures with varying flexibility within 3D printed objects. Similarly, <em>Velocity Painting</em> uses under-extrusion due to rapid print speed changes to create visual patterns on the object's surface [32]. <em>Expressive FDM</em>&nbsp;[28] modifies the height of the extruder in conjunction with the amount of deposited material, which results in different printed patterns, thereby forming various haptic structures. All of these works have in common that they enable new 3D printing capabilities without modifying the 3D printing hardware. Our work is in line with these related papers in that we leverage the existing unmodified hardware and embedded control systems to fabricate parts in an unconventional and new way. Unique in our approach is that we separate the printing from the programming step to achieve the desired visual and haptic properties, expanding the capability of the 3D printer.</p>
+           
+          </div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+             <h2>3. Method: <em>Speed-Modulated Ironing</em></h2>
+              <p><em>Speed-Modulated Ironing</em>&nbsp;is a novel fabrication technique to achieve high-resolution shade and texture gradients by continuous fine-grained programming of temperature-responsive filaments. In our method, every layer is first printed and then re-heated by a second nozzle, which irons over the layer at a constant temperature but at precisely controlled speeds, see Figure&nbsp;2. By separating the printing step from the programming step, we address the inability of a printing nozzle to change temperature rapidly. This allows us to locally vary the applied heat with precision and thus, to change properties of temperature-responsive filaments at an unprecedented resolution. In this section, we introduce the used materials, discuss the challenges of fine-grained temperature control, explain the working principle of our method, and present our theoretical model of ironing-induced heating.</p>
+    
+      
+          <h3>3.1 Temperature-Responsive Filaments</h3>
+        
+      <p>Our method utilizes the ability of some materials to obtain varying color shade, texture, and translucency when exposed to different levels of heat. In this paper, we present our work on three off-the-shelf 3D printing filaments; however, in principle, our approach can be used for other temperature-responsive materials as well. The first filament is a foaming filament, which contains a foaming agent that causes the filament to convert into a closed-cell structure when heat is applied. The higher the applied heat, the more the foam expands, leading to larger cells. The cells in the foam structure scatter light, resulting in a brighter color appearance and increased opacity. In addition, the cells result in a coarser tactile feel of the surface. The type of foaming filament used in this work is LW-PLA<sup>2</sup>. As the second and third material, we use PLA filled with wood fibers (Woodfill<sup>3</sup>) and with cork fibers (Corkfill <sup>4</sup>) respectively. The last two filaments have a comparable temperature response, they obtain a progressively darker color shade when exposed to higher temperatures due to pyrolysis [16].
+      </p>
+<h3>3.2 Challenge: Fine-Grained Control of Applied Heat</h3>
+       
+      <p>Our goal is to be able to create 3D prints with local property variations that are continuous and have a high resolution. While the temperature-response of filaments has been used before to locally vary appearance or other properties in 3D prints&nbsp;[16]&nbsp;[19], none of the existing methods is capable of reproducing <em><strong>high-resolution</strong></em> shade and texture details, since they rely on changing the printing nozzle temperature, which is very slow and challenging to control. For example, to obtain significant color change in Woodfill filament, the nozzle temperature must vary between 195° C and 300° C, which takes tens of seconds on most 3D printers. Since rapid changes in nozzle temperature are not possible, existing approaches rely on segmenting the 3D geometries into discrete regions, each printed at one temperature. The temperature changes are then done in-between printing the segments. Furthermore, the nozzle needs to be purged frequently when a filament that has been exposed to a high temperature is present in the nozzle, but the next part needs to be printed at a lower activation level. This results in long print times, and increased material waste. The segmentation imposes significant limits to the achievable resolution, as every segment is printed in a separate path, losing the continuous nature of extrusion 3D printing. The smoothness of graded transitions is also limited since gradients are divided into discrete steps and truly graded transitions are only possible in the z-direction of printing, the only case where the nozzle has sufficient time to achieve the required temperature. These limitations make the approaches that change printing nozzle temperature unsuitable for our purpose.
+      </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig3.jpg" width="900"  alt=""/>
+        <p><em>Figure 3: Speed-Modulated Ironing&nbsp;workflow. Starting with a gcode for a single-nozzle print, we extract the toolpaths of the outer wall for every layer. This contour is then subdivided at the sampling length (0.2 mm) and used as the ironing path. The gcode for the ironing operations is merged with the input gcode, and the merged output can be sent for 3D printing.</em></p>
+      </div>
+<h3>3.3 Programming Through Ironing</h3>
+      
+      <p><strong>Working principle:</strong> We separate the 3D printing and re-heating for programming into two consecutive steps using an unmodified dual-nozzle 3D printer. The first nozzle is dedicated to the primary task of 3D printing the filament at a relatively low nozzle temperature that does not cause any temperature response of the material (see Figure&nbsp;2 a). The second nozzle is empty (i.e., does not have any filament loaded into it) but is used for programming the properties by <em>re-heating</em> the already printed layer of material. The re-heating is done by moving the empty heated nozzle over the print while slightly touching, <em>"ironing"</em>, the top of the printed layer. The temperature increase in the layer triggers a temperature response of printed material, such as change in color shade. The separation of the 3D printing and programming into two steps allows us to leverage the accurate motion control of the printing head since the speed of the ironing nozzle can be rapidly and precisely changed within a layer, unlike nozzle temperature. We keep the ironing nozzle temperature constant and modulate the applied heat through variations in ironing speed (see Figure&nbsp;2 b). Slow ironing causes the layer to heat up more than when ironing at a faster speed (see Figure&nbsp;2 c). We choose to use separate nozzles for printing and ironing. Doing both steps with the same nozzle is impractical as it requires long temperature changes at every layer. This increases print time significantly and exposes residual material in the nozzle to high temperatures for prolonged times, which will likely clog the nozzle. We derive the name of our method from the known concept in 3D printing, "ironing", where the top surface of a 3D model is smoothed by a nozzle at a constant speed.</p>
+      <p><strong>Ironing workflow:</strong> The main input to our workflow is the gcode of a sliced geometry for a single-nozzle 3D print prepared by the user. Gcode instructions for the ironing by the second nozzle are inserted into this input gcode while all 3D printing instructions and features, such as inner walls, infills, and support structures, remain unchanged. This workflow also preserves the user preferences of slicing, machine, and material-related settings for 3D printing. A schematic overview of the workflow is shown in Figure&nbsp;3.</p>
+      <p>Since we are interested in the color shade and textures of 3D objects in this work, our method applies the ironing step only to the outer contour in each layer. For each layer of the 3D print, we extract the contour geometry of the outer wall from the input gcode. To this contour, we apply sampling points at a distance that we tested as short as 0.2mm. For each point, we then sample the intended property value (color shade, texture, translucency). The property values can be defined via an image, such as the color texture image of a 3D mesh file, or the user can project an image onto a 3D geometry directly in our tool (see Section&nbsp;4).</p>
+      <p>Each sampled value, for example, target color shade, is then mapped to an ironing speed that will yield the required re-heating and, therefore, corresponding color change in the material. Using these modulated speeds, we create ironing toolpaths and insert these into every layer of the input gcode, together with the printer instructions for the nozzle changes. The final gcode file can be sent to the 3D printer for fabrication.</p>
+      <p><strong>Ironing parameters:</strong> For each of the used materials, we determined the ironing parameters that yield the desired results. We aimed for a maximum difference in the property (color shade, texture, translucency) while keeping the structural and 3D detail integrity of the 3D printed shape. For example, a too-high ironing temperature or too-slow ironing speed may be able to trigger a response of the material but at the same time damage the printed structure. Possible damages include an unintended roughening of the surface or even holes in the printed part. This means that the ironing parameters need to be well-balanced. The main parameters we investigated were ironing temperature, ironing speed range, and ironing height. Table&nbsp;1 presents the ironing parameters we use in our method.</p>
+     <p>
+          <em> Table 1: Ironing nozzle temperature and ironing speed ranges for the three materials used in our method. </em> </p>
+        <table class="table">
+          <tbody>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;"></td>
+              <td style="text-align:left;"><strong>nozzle temperature [° C]</strong></td>
+              <td style="text-align:left;"><strong>min speed [mm/s]</strong></td>
+              <td style="text-align:left;"><strong>max speed [mm/s]</strong></td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">LW-PLA</td>
+              <td style="text-align:left;">300</td>
+              <td style="text-align:left;">1</td>
+              <td style="text-align:left;">60</td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">Woodfill</td>
+              <td style="text-align:left;">325</td>
+              <td style="text-align:left;">1.5</td>
+              <td style="text-align:left;">10</td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">Corkfill</td>
+              <td style="text-align:left;">325</td>
+              <td style="text-align:left;">1</td>
+              <td style="text-align:left;">20</td>
+            </tr>
+          </tbody>
+        </table>
+      
+      <p>We tested different ironing nozzle heights, which were measured as the distance from the printed layer. When the ironing nozzle is too high, there is too little to no contact with the printed layer, which leads to insufficient re-heating and, therefore, no property change. An ironing nozzle that is too low will "dive" into the printed layer, causing visible damage. The best results were obtained when there was no height difference, i.e., the tip of the ironing nozzle was at the same height as the top of the printed layer. This requires a well-calibrated z-offset of the two nozzles in the 3D printer. Many modern 3D printers have an auto-bed leveling feature that can be used to address this issue.
+      </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig4.jpg" width="900"  alt=""/>
+        <p><em>Figure 4: User interface of the Speed-Modulated Ironing&nbsp;tool with the main interface to generate a gcode and the steps to follow by users. First, the user selects the material and chooses the input mode. Then, the user points to the project directory that contains the input files. When using Textured OBJ mode, the textured mesh in converted to ironing paths and a preview image of the generated gcode is shown. After selecting "generate gcode", the printing file is exported and can be fabricated.</em></p>
+      </div>
+<h3>3.4 Theoretical Model</h3>
+       
+      <p>The relationship between the ironing speed and the temperature obtained in the material has shown to be highly non-linear in our initial tests. To be able to control the temperature response of the material accurately, a better understanding of this relationship was needed. We therefore developed a theoretical model for ironing-induced heating. We use the reached material temperature as a proxy for color change in our model. For Woodfill, the relationship between temperature and color change has shown to be linear within a temperature range of 200° C and 300° C [16].
+      </p>
+      <p>We model the system as a 1D conductive heating problem of a semi-infinite region with one-sided heating. The ironing nozzle acts as the heat source and is in close proximity or direct touch with the printed layer. The printbed is an adiabatic surface of fixed temperature. Since convection to air is minimal when ironing is actively occurring, we ignore its contribution in our model. Consequently, the heat transfer equation for our model is:
+      </p>
+      
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr>
+                <td width="95%" align="center"><img src="html_resources/images/eq1.png" width="220"  alt=""/></td>
+                <td width="5%">(1)</td>
+              </tr>
+            </tbody>
+          </table>
+      
+      
+      <p></p>
+      <p>where <em>T</em> is the temperature of the material, <em>z</em> is the (vertical) distance from the heat source (ironing nozzle), <em>t</em> is the time, and <em>α</em> is the thermal diffusivity of the material. We solve the governing heat transfer differential equation (Equation&nbsp;1) as a function of <em>z</em> and <em>t</em>:
+      </p>
+      
+        
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr>
+                <td width="94%" align="center"><img src="html_resources/images/eq2.png" width="650"  alt=""/></td>
+                <td width="6%">(2)</td>
+              </tr>
+            </tbody>
+          </table>
+         
+      
+ 
+      <p></p>
+	<p>where "erfc(x)" is "1 - erf(x)" (error function). The boundary conditions are <em>T</em>(<em>z</em>, 0) = <em>T<sub>bed</sub></em>, constant heat flux at surface, and <em>T</em>(∞, <em>t</em>) = <em>T<sub>bed</sub></em>. Under these conditions, using constant values for PLA (<em>k</em> = 0.1 W/mK, <em>h</em> = 50 W/m<sup>2</sup>K, <em>α</em> = 10<sup>−7</sup> m<sup>2</sup>/s) [22, 31], and substituting <em>t</em> with <em>D<sub>nozzle</sub></em>/<em>V<sub>iron</sub></em> (where <em>D<sub>nozzle</sub></em> = 1.3 mm), the exact governing solution for the heat transfer equation is expressed as:      </p>
+	
+	  
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	      <tbody>
+	        <tr>
+	          <td width="95%" align="center"><img src="html_resources/images/eq3.png" width="718"  alt=""/></td>
+	          <td width="5%">(3)</td>
+            </tr>
+          </tbody>
+	      </table>
+	    
+	    
+	   
+	    
+	  
+      <p></p>
+      <p>where <em>T</em> is the material temperature (°C), <em>z</em> is the distance from the heat source (mm), and <em>V<sub>iron</sub></em> is the nozzle's ironing speed (mm/s).<em>T<sub>bed</sub></em> is the printbed temperature, which is held constant at 60°C, and <em>T<sub>iron</sub></em>, is the ironing nozzle's temperature.</p>
+      <p>Figure&nbsp;5 shows the modeled maximum temperature of the material as a function of different ironing speeds, assuming an ironing nozzle temperature of 340°C.</p>
+      <p>We validate our model with experimental data in Section&nbsp;6 and use the insights of the non-linear relationship between ironing speed and locally obtained temperature for the mapping of the desired property change to ironing speed in our tool, as discussed in Section&nbsp;4.
+      </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig5.jpg" width="500"  alt=""/>
+        <p><em>Figure 5: Modeled maximum temperature of the material as a function of different ironing speeds, for nozzle temperature 340°C. A) The obtained temperature at the top of a layer z=0. B) the temperature at z=0.15, the bottom of the layer.</em></p>
+      </div>
+</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+         <h3>4. <em>Speed-Modulated Ironing</em>&nbsp;Tool</h3>
+    
+    
+    <p>We developed a tool with a user interface that allows users to apply our method in their 3D printing workflow<sup>5</sup>. It provides an accessible way for makers to create locally varying shades, textures, and translucency with a single material using their unmodified 3D printers. In the recommended mode, the tool currently supports the three materials we have used in this paper without the need to modify any settings. For advanced users or for users who want to apply the method to not-yet-tested materials, we also provide the option to change the ironing parameters and other settings of our tool. The tool and the interface are implemented in <em>Rhinoceros 3D Grasshopper</em> and can be considered as a gcode post-processor since it generates and adds the computed ironing printer instructions to existing gcode files.</p>
+    <p><strong>File preparation and gcode generation</strong>: The user interface and the steps to use the tool are presented in Figure 4.</p>
+    <p>Prior to using the tool, the user needs to slice the geometry for their printer with standard slicer software. Our current implementation assumes the file is sliced using <em>Cura</em><sup>6</sup> slicer. We share recommended <em>Cura</em> settings along with the <em>Speed-Modulated Ironing</em>&nbsp; tool. The first step in our tool is to choose the material to be used, which defines the ironing settings (step 1 in Figure 4). This is followed by selecting the texture input mode, which is either <em>image projection</em> or <em>textured OBJ</em> mode (step 2 in Figure 4). Next to the pre-sliced gcode, the required input files depend on the selected input mode. The textured OBJ mode, requires a textured mesh file (in the Wavefront OBJ file format) and a 3MF file (exported from <em>Cura</em> along with the gcode). All the input files need to be stored in a project directory, and this folder has to be selected on the interface (step 3 in Figure 4). The texture or projection image should be included in the same folder, which can be selected and viewed on the interface (step 4 in Figure 4).</p>
+    <p>Our design tool reads all the documents from the folder and processes them as follows: First, the gcode file is used to extract the outer wall toolpaths for every layer, which are used as the contour path for the ironing. This contour is subdivided into segments of 0.2mm to get the sampling points (Figure 3). In the textured OBJ mode, the mesh is automatically aligned with the gcode by using the transformation matrix from the 3MF file. Then, using the UV mapping values from the OBJ mesh, for every sampling point, the color values from the OBJ texture file are extracted and converted to grayscale values. Since the relationship between ironing speed and color change is not linear, for every material a lookup table was generated using equation 5 and table 2. The lookup table is used to assign every sampling point with the ironing speed that was found to achieve the required color change. In the image projection mode, the grayscale values of a user-selected 2D image are projected through the 3D model over one axis using parallel projection. Then, for every sampling point, the corresponding grayscale value from the 2D image is used to obtain the ironing speed using the same lookup tables as in the textured OBJ mode.
+    </p>
+    <p>Finally, choosing the <em>generate gcode</em> on the tool, the print-ready output file is saved to the project directory. The user can see the preview of the generated file (step 5 in Figure 4), where the preview shows the gradients on the object surface. Depending on the chosen material, the preview shows the expected color values that will be obtained in the print. After exporting the gcode (step 6 in Figure 4), the file can be sent for fabrication. Figure 4 also shows the final printed object in comparison to the preview. The combination of material-specific mapping of the ironing speeds and high sampling rate, the tool allows the fabrication of gradients that appear smooth and linear to the human eye.
+    </p>
+    <p><strong>Advanced mode</strong>: For users to experiment with the process or test additional materials, we provide advanced settings in the tool. These include both ironing and printing settings. In the ironing settings, the users may control the sampling length (resolution of the speed variations), ironing temperature, speed interval, and nozzle Z-offset. Lowering the sampling length provides finer texture details while resulting in a longer processing time and a larger output file. The other settings here can be fine-tuned for new materials. We also provide the option to change several print settings that are also material-dependent. For instance, standby temperature (printing nozzle temperature while inactive) and retraction settings are helpful to avoid material oozing out of the printing nozzle while ironing with the second nozzle.</p>
+</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>5. Applications</h3>
+            <p>We demonstrate applications that are uniquely enabled by our method to vary the color shade, translucency, and tactile texture.</p>
+<h4>5.1 Color Shade</h4>
+            <p>Our approach offers precise control over shade variations within 3D-printed objects. For example, textures, decals, and text on 3D models allow for personalized designs. By carefully controlling the re-heating process, printed aesthetic patterns can be created, adding additional artistic appeal to objects such as vases, mugs, or decorative sculptures. Figure&nbsp;6 shows a series of vases with different decorative patterns applied to the surface.</p>
+      <p>Our method can also be used to fabricate 3D-scanned objects. A textured mesh of a color-scanned owl figurine <sup>7</sup> was imported into our tool (Figure&nbsp;7 a). The model with the texture details was reproduced using Corkfill filament, (Figure&nbsp;7 b and c), Woodfill filament (Figure&nbsp;7 d), and green foaming filament (Figure&nbsp;7 e).</p>
+      <p>These examples illustrate the capability of our method of enhancing 3D prints with decorative or functional visual features.</p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig6.jpg" width="500"  alt=""/>
+        <p><em>Figure 6: Examples showing local shade variations. Each object was printed using a single material; either Corkfill or Woodfill was used.</em></p>
+      </div>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig7.jpg" width="400"  alt=""/>
+        <p><em>Figure 7: Example of a scanned figurine processed using our method and fabricated with local shade variations. A) The mesh file with texture. B) A print made with Corkfill. C) Another print with Corkfill but with reversed brightness values. D) Print with Woodfill. E) Print with green LW-PLA.</em></p>
+      </div>
+<h4>5.2 Translucency</h4>
+            <p>Translucency is a desirable property in various objects, and our method enables the creation of 3D-printed objects with regions of varying translucency. As an example of local translucency differences, Figure&nbsp;8 shows transparent liquid containers with opaque design features printed using "natural color" LW-PLA.</p>
+            <div class="text-center"><img src="html_resources/images/uist24-133-fig8.jpg" width="400"  alt=""/>
+              <p><em>Figure 8: Liquid containers printed using "natural color" LW-PLA. Regions ironed at a low speed become opaque, while regions ironed at a high speed remain translucent.</em></p>
+            </div>
+<h4>5.3 Tactile Texture</h4>
+            <p>Texture plays a crucial role in the tactile functionality and user experience of objects. Our method enables the incorporation of diverse textures into 3D-printed objects. It allows customization of texture variations according to custom comfort or personal requirements, making it suitable for a wide range of applications. This includes textured handles for tools and appliances or ergonomic grips for sports equipment, e.g., the bike handle example in Figure&nbsp;9.</p>
+<p>Figure&nbsp;10 shows a speaker enclosure with touch buttons which are smoother to the touch compared to the rest of the housing. These areas also visually signal the tactile, "touchable" nature of the buttons. This part was printed using regular PLA (i.e. without special additives) and is, therefore, an example of our method being applied using a commonly used printing material.
+		    </p>
+		    <div class="text-center"><img src="html_resources/images/uist24-133-fig9.jpg" width="400"  alt=""/>
+			    <p><em>Figure 9: Bike handle fabricated using black LW-PLA. Our method enabled varying roughness for grip and decoration.</em></p>
+		    </div>
+		    <div class="text-center"><img src="html_resources/images/uist24-133-fig10.jpg" width="400"  alt=""/>
+		      <p><em>Figure 10: Touch buttons on a speaker. The touch regions have a smoother and glossier finish compared to the surrounding area. This part was printed using regular PLA.</em></p>
+		    </div>
+</div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>6. Technical Characterization</h3>
+            <p>Our technical evaluation determines achievable color shade difference as a function of ironing speed on three types of filament: Woodfill, Corkfill, and a foaming filament (LW-PLA, Black). We also characterize the performance of our method in its capability to reproduce fine shade details on the surface of objects.</p>
+            <h4>6.1 Color Difference</h4>
+            <p>We 3D printed samples of 80mm x 20mm to which a 2x2 rectangular grid of different regions was applied. Two of these were the reference regions that were ironed at a constant high speed at which no significant re-heating, and therefore no color change, occurs. The other two regions were ironed at lower speeds and varied per sample; these were the sampling regions (Figure&nbsp;11 b). All samples were printed on an <em>Ultimaker S5</em>.</p>
+      <p>The samples were placed inside a diffusion box (Figure&nbsp;11 a) for controlled lighting conditions and photographed with a DSLR camera. We used the CIELAB&nbsp;[8] color space to measure the colors of the samples.</p>
+      <p>To gauge the color difference our method can achieve, we use Δ E as the metric. Δ E (Equation&nbsp;4) represents the Euclidean distance between two colors in CIELAB color space. A Δ E less than or equal to 1.0 is considered to be a non-perceivable color difference for the human eye&nbsp;[8].</p>
+      <p>The conversion to CIELAB and the calculation of the Δ E were done in an interactive Matlab script that we developed. Since our samples have two sampling regions and two reference regions within a single print, we calculate Δ E with respect to each reference, then report the global average (Figure&nbsp;11 b). Because the color difference values are all measured relative to the reference zones, possible variations in lighting conditions are eliminated.</p>
+			   
+	        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	      <tbody>
+	        <tr>
+	          <td width="95%" align="center"><img src="html_resources/images/eq4.png" width="400"  alt=""/></td>
+	          <td width="5%">(4)</td>
+            </tr>
+	        </tbody>
+	      </table>
+	        <div class="text-center"><img src="html_resources/images/uist24-133-fig11.jpg" width="500"  alt=""/>
+	          <p><em>Figure 11: (A) Experimental set-up for our approach consists of a DSLR camera at a fixed distance and angle from the sample. (B) The sample consists of two main regions: reference regions and sampling regions which are ironed.</em></p>
+            </div>
+<p>
+			  <strong>Woodfill Filament:</strong> We prepared 13 samples with fixed printing nozzle parameters (200°C printing temperature, 0.15 mm layer height, 0.4mm line width, no infill, wall-count 2). The ironing temperature was 340 °C, and the ironing speed was varied from 1mm/s to 13 mm/s for the sampling regions. All reference regions had an ironing speed of 40 mm/s.</p>
+      <p>The results of the printed samples are illustrated in Figure&nbsp;12.
+			  
+		    </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig12.jpg" width="400"  alt=""/>
+        <p><em>Figure 12: Contrast in Woodfill filament prints as ironing speed varies from 1 mm/s to 13 mm/s.</em></p>
+      </div>
+<p>As shown in Figure&nbsp;13, as the ironing speed increases, the Δ E value decreases exponentially until it plateaus. The maximum Δ E was measured in the 1mm/s sample with a value of 63.8 ±  5.06.
+		    </p>
+		    <div class="text-center"><img src="html_resources/images/uist24-133-fig13.jpg" width="400"  alt=""/>
+			   <p><em>Figure 13: Exponential fit for color difference data values for ironed regions of Woodfill (A), Corkfill (B), and LW-PLA Filament (C) relative to reference regions as functions of ironing speed.</em></p>
+		    </div>
+<p> <strong>Foaming filament:</strong> We printed 14 samples of foaming (LW-PLA) filament with printing parameters (200°C printing temperature, 0.15 mm layer height, 0.4mm line width, no infill, wall-count 2) and an ironing temperature of 300°C. This ironing nozzle temperature (40°C lower compared to Woodfill and Corkfill) is to eliminate overheating of the filament through ironing. Unlike prints made with Woodfill and Corkfill materials, ironing foaming filament results in lighter regions compared to the printed reference areas (Figure&nbsp;14 b).
+      
+			</p>
+		  
+			
+      <p>Because of the glossiness of the non-foamed material, the viewing angle and lighting direction affect the perceived color difference within the prints. For instance, in Figure&nbsp;14 a, the test pattern is clearly distinguishable at no tilt. However, when the same sample is tilted forward, it appears darker, and when tilted backward, it appears lighter. Within our evaluation, we selected the orientation that yielded a stable color difference with minimal reflections, which is a vertical orientation with no tilt.</p>
+<p>Finally, the range of speeds tested was from 1mm/s to 30 mm/s for the sampling regions, and 40 mm/s for the reference regions. The printed results are illustrated in Figure&nbsp;16, where we generally observe an exponential decay of contrast values as a function of ironing speed. The maximum Δ E attained at this orientation under non-directional lighting is 28.66 ±  3.91 at 1mm/s ironing speed. The outliers between 4mm/s and 9mm/s can be attributed to the sample's changed glossiness at both ironed and reference regions, resulting in higher contrast or Δ E values, as can be seen in Figure&nbsp;14 b.
+</p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig14.jpg" width="500"  alt=""/>
+        <p><em>Figure 14: (A) Change in part glossiness and clarity is based on tilt angle. Tilting forward universally makes the test pattern darker, and tilting backward makes it glossier. (B) shows the contrast in foaming filament prints as ironing speed varies from 1 mm/s to 30 mm/s.</em></p>
+      </div>
+<p><strong>Corkfill filament:</strong> 14 samples of Corkfill prints were prepared with printing parameters (200°C printing temperature, 0.15 mm layer height, 0.4mm line width, no infill, wall-count 2) and an ironing temperature of 340 °C. The range of speeds tested was from 1mm/s to 30 mm/s for the sampling regions and 40 mm/s for the reference regions. Figure&nbsp;15 shows the print result.</p>
+			  <div class="text-center"><img src="html_resources/images/uist24-133-fig15.jpg" width="400"  alt=""/>
+			    <p><em>Figure 15: Contrast in Corkfill filament prints as ironing speed varies from 1 mm/s to 30 mm/s.</em></p>
+		    </div>
+<p>Similar to the measurements of the Woodfill and foaming filaments, the Δ E values for Corkfill decrease exponentially with an increasing ironing speed (Figure&nbsp;13). The maximum Δ E value for Corkfill was found to be 55.33 ±  6.81, obtained by ironing at 1mm/s.</p>
+<p><strong>Measured Characteristic of Δ E:</strong> To get a characteristic description of the measurements in an equation, we first normalize the measured Δ E. We can describe the relationship between the measured Δ E and ironing speed in mm/s with the exponential equation:</p>
+	        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	      <tbody>
+	        <tr>
+	          <td width="95%" align="center"><img src="html_resources/images/eq5.png" width="200"  alt=""/></td>
+	          <td width="5%">(5)</td>
+            </tr>
+	        </tbody>
+	      </table>
+      
+		   <p>where v is the velocity in mm/s. For normalized Δ E, the constant values we found for the three filaments are given in Table 2. All the values are within a 95% confidence bound, while in the case of foaming filament, this confidence bound excludes the outliers at ironing speeds of 4,6,7,8 and 9 mm/s.</p>
+		   
+		  <p><em>Table 2: The constant values in the normalized Δ E equation (Eq. 5) for different filaments.</em></p>
+		 
+
+        <table width="100%">
+          <tbody>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;"></td>
+              <td style="text-align:center;">a</td>
+              <td style="text-align:center;">b</td>
+              <td style="text-align:center;">c</td>
+              <td style="text-align:center;">d</td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">Woodfill</td>
+              <td style="text-align:center;">2.283</td>
+              <td style="text-align:center;">-1.115</td>
+              <td style="text-align:center;">0.318</td>
+              <td style="text-align:center;">-0.239</td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">Corkfill</td>
+              <td style="text-align:center;">0.191</td>
+              <td style="text-align:center;">-0.076</td>
+              <td style="text-align:center;">1.347</td>
+              <td style="text-align:center;">-0.482</td>
+            </tr>
+            <tr style="border-bottom: 2pt solid #000000;">
+              <td style="text-align:left;">LW-PLA</td>
+              <td style="text-align:center;">0.144</td>
+              <td style="text-align:center;">-0.086</td>
+              <td style="text-align:center;">1.828</td>
+              <td style="text-align:center;">-0.734</td>
+            </tr>
+          </tbody>
+        </table>
+     <p>&nbsp;</p>
+     <p><strong>Validation of the theoretical model:</strong> The experimental results correspond to the general trend we expect from our theoretical model, which is an exponentially decaying graph as a function of increasing ironing speed.</p>
+      <p>By normalizing the data from the theoretical model between 1 and 0, we are able to compare the characteristic relationship between ironing velocity and measured Δ E and the modeled ironing velocity as a function of temperature at z= 0.15mm (layer height).</p>
+      <p>Figure&nbsp;16 b shows this result for Corkfill filament. The theoretical model fits the experimental data well with a maximum normalized error of 0.0672 (i.e., 6.72% of the max value) and an average error of 0.0168 (i.e., 1.68% of the max value). We also generally conclude from the closeness of fit between the experimental and theoretical models how the relationship between the normalized temperature values and normalized Δ E values is linear.</p>
+      <p>Using the same method for the Woodfill printed samples, we find that the experimental model fits the theoretical model generally but with a larger error margin in comparison to the Corkfill model (max error of 0.16 or 16%, and average error of 0.06 or 6%). This is also true for the foaming LW-PLA filament with a max error of 0.1329 or 13.29%, and a mean error of 0.035 or 3.5%) excluding outliers.
+      </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig16.jpg" width="400"  alt=""/>
+        <p><em>Figure 16: Comparison between theoretical and experimental model fits to contrast data values for Woodfill (A), Corkfill&nbsp;(B), and LW-PLA&nbsp;(C).</em></p>
+      </div>
+<h4>6.2 Detail Reproduction</h4>
+      <p>To evaluate the capability of our method to reproduce a variety of visual features and texture designs, we prepared samples that test rapid variations in color shade, thin features, and gradient transitions of color. All tests were carried out for LW-PLA, Woodfill, and Corkfill filaments.</p>
+<p><strong>Detail and gradient testing:</strong> A 60mm x 60mm x 60mm cube was designed, and a test image was applied to each of the four vertical faces. The test images are illustrated in Figure&nbsp;17 a. The first test image is a QR code, which tests a practical application of rapid spatial transitions with significant color differences. The second image aims to evaluate the ability to produce smooth gradients. The third tests thin light lines on a dark background and dark lines on a light background at different angles. Finally, the last image evaluates rapid transitions between minimum and maximum reheating.
+</p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig17.jpg" width="500"  alt=""/>
+        <p><em>Figure 17: A) Patterns for testing resolution and detail capabilities. B) Test pattern printed with Woodfill. C) Corkfill. D) Black LW-PLA. E) Translucent "natural" LW-PLA.</em></p>
+      </div>
+<p>All samples were printed successfully with Woodfill, Corkfill, black LW-PLA, and natural LW-PLA; see Figure &nbsp;17 b, c, d, e. The prints allowed a closer inspection of the performance of our method with the test images. For all materials, the QR codes were of sufficient quality and contrast to be directly readable by a regular smartphone camera. Also, the circular gradient came out with an even and smooth transition with all materials. The main edge case is the test of thin lines printed with Woodfill. For these specific features, it might be necessary to reconsider the ironing parameters (i.e. nozzle temperature and speed). However, for Corkfill and LW-PLA, the lines were produced well and showed clear sharp transitions irrespective of line orientation.</p>
+      <p><strong>Text legibility:</strong> To evaluate at which sizes legible text can be reproduced, samples of 50mm x 100mm were created, to which an image with text was applied. The text size varied from 40pt down to 5pt; see Figure&nbsp;18 a. The resulting samples are shown in Figure&nbsp;18 b, c, and d. We found that our method can reproduce the larger font sizes on all three materials. For LW-PLA, the smallest readable font size was 9pt, while for Woodfill and Corkfill, the smallest readable font size was 14pt.
+      </p>
+      <div class="text-center"><img src="html_resources/images/uist24-133-fig18.jpg" width="500"  alt=""/>
+        <p><em>Figure 18: Test samples for text legibility at different font sizes. A) test image. B) Corkfill sample. C) Woodfill sample. D) LW-PLA sample.</em></p>
+      </div>
+<p>
+		    <strong>Photographs:</strong> Evaluating the capability of our method to reproduce photographic images, a 60mm x 60mm x 60mm sample was prepared, to which 4 portrait photographs were applied. The tests show that our method is able to reproduce the photographs with fine details and sufficient color contrast using Corkfill (Figure&nbsp;19 a) and Woodfill (Figure&nbsp;19 b). For the performance of our method with LW-PLA, see the photographic texture in Figure&nbsp;1 and Figure&nbsp;4.
+			  </p>
+		  <div class="text-center"><img src="html_resources/images/uist24-133-fig19.jpg" width="600"  alt=""/>
+		    <p><em>Figure 19: Test samples evaluating the capability to reproduce photographs with different color shades and fine details. A) Corkfill prints. B) Woodfill prints.</em></p>
+		    </div>
+		  
+
+	
+          </div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>7. Discussion</h3>
+            <p><em>Applicability</em>: The printed results indicate that our proposed method can fabricate 3D prints with textures that have a high spatial resolution and smooth color gradients that are generally unavailable to FDM 3D printing. This allows a wide variety of visible features to be added to 3D printed parts, expanding the current capabilities and applicability of FDM printing.
+    </p>
+    <p> Our method does not require any 3D printing hardware modifications. Also, we show that our method can be applied to parts that were sliced with machine-specific and user-defined settings without changing them. As a result, all printing features (e.g. infills, support structures) can remain unaltered. This means that integration into existing slicers would not require significant changes in the core algorithms or printing strategy.
+    </p> 
+    <p><em>Printing time and material use</em>: Compared to other common approaches for multi-color FDM prints, our method can lead to shorter print times and less material use. As an indicator of printing time, the cup with the Einstein image (Figure&nbsp;4) took 2h 30m, while the original (uncolored) cup takes 1h 30m to complete. Comparing this to multi-material printing on the same machine, a two-color print of the cup with a similar image results in a printing time of 3h 50m. A <em>Bambu Lab X1-Carbon</em> (4-material printer) yields a printing time of 14h 30m for the cup and uses more than 10 times the volume of material due to frequent material switching and consequent purging. An approach that uses nozzle temperature variation for color change&nbsp;[16] documents up to a 10-fold increase in printing time and double the material use compared an uncolored model.
+    </p>
+    <p><em>Energy consumption</em>: <font color="#000000">Printing the reference cup with our method required 0.29kWh, while the dual-material print used 0.42kWh. The same cup as a regular single material (uncolored) print uses 0.13kWh. While our method uses more energy compared to printing without applying color, for a reference print (Figure&nbsp;4) it uses less energy than common dual-material printing on the same machine. Furthermore, the existing methods have difficulty achieving the resolution and gradients of our method because their texture details rely on the extrusion of the material itself.</font>
+    </p>
+</div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>8. Limitations and Future Work</h3>
+            <p> In this section, we discuss the limitations of our approach and avenues for future work.
+    </p> 
+    <p><em>Specific printer used</em>: Our research primarily utilized <em>Ultimaker</em> printers (models <em>3</em>, <em>S3</em>, <em>S5</em>, and <em>S7</em>) to explore the responsiveness of three distinct filament types to varied reheating through ironing. During this exploration, we also focused on the processing of gcode tailored for <em>Ultimaker</em>’s <em>Cura</em> slicer. The adaptation of our technique for other FDM printers requires an understanding of each printer's operation and specific gcode formatting, particularly in determining layer heights and extracting contours for ironing. However, the fundamental principles of <em>Speed-Modulated Ironing</em>&nbsp;hold across different hardware, which would facilitate the method's broader applicability with appropriate adjustments for individual printers. Future work will also explore the integration of our approach into existing slicers (i.e., rather than using a separate processing tool), and a detailed examination of other printer-specific parameters, such as acceleration, to further optimize print time and resolution.</p>
+    <p><em>Extending the design space</em>: While our current work has focused on the visual and tactile enhancements possible through <em>Speed-Modulated Ironing</em>, we envision its utility in programming not just surface-level properties but also in manipulating mechanical, acoustic, and even shape-morphing characteristics inherent to the material itself. The exploration of foaming filaments illustrates this potential, where localized control over mechanical properties&nbsp;[1] could also impact the way how objects are designed and utilized.</p>
+    <p>The current version of our design tool processes only the outer surface of the object. We plan to implement the possibility of ironing the whole layer (including the inner regions and top/bottom layers) in the future version. Furthermore, by experimenting with a diverse range of materials, we hope to further expand the design space. As an indication, in Figure 10, we showed that our method can also be applied to vary the visual and tactile properties a regular PLA filament. This example hints at the potential of <em>Speed-Modulated Ironing</em>&nbsp; for future applications.</p> 
+</div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>9. Conclusion</h3>
+           <p>In this work, we introduced <em>Speed-Modulated Ironing</em>, a novel method that expands the capabilities of single-material 3D printing by enabling high-resolution control over visual shade and tactile texture gradients. Using one nozzle to 3D print and the second nozzle to reheat printed areas at varying speeds, we achieve intricate activation of temperature-responsive filaments, such as Woodfill, Corkfill, and foaming filaments, in a single fabrication process. Using our software tool, users can achieve high-resolution fabrication of objects with graded shades, textures, and translucency, without necessitating multiple materials or complex hardware modifications.</p>
+    <p>We demonstrated the capability of our approach to create objects with fine textures and graphics using a single material, the resolution of which we analyzed in our technical evaluation. For future work, we will further adapt our workflow to program the properties of the printed object not just on the outer surface but on the interior as well. <font color="#000000">Applying this to the interior is especially relevant when locally modifying mechanical properties.</font> We hope that our work represents a step toward a more versatile, expressive, and sustainable form of 3D printing and will enable further explorations in temperature-responsive materials.</p>
+</div>
+        </div>
+      </div>
+    </section>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>Acknowledgments</h3>
+            <p> We extend our gratitude to Joris van Dam for his invaluable technical assistance, and to  <em>        Ultimaker</em>       for providing equipment and offering essential insights into printer functionalities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  <hr>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>References</h3>
+            <ol>
+              <li>2020. Testing colorFabb varioShore TPU - Foaming 3D printing filament. <a class="link-inline force-break" href="https://www.cnckitchen.com/blog/testing-colorfabb-varioshore-tpu-foaming-3d-printing-filament">https://www.cnckitchen.com/blog/testing-colorfabb-varioshore-tpu-foaming-3d-printing-filament</a> <span class="link-das"> </span></li>
+              <li>Patrick Baudisch and Stefanie Mueller. 2017. Personal Fabrication. <em><em>Foundations and Trends® in Human–Computer Interaction</em></em> 10, 3–4 (May 2017), 165–293. <a class="link-inline force-break" href="https://doi.org/10.1561/1100000055">https://doi.org/10.1561/1100000055</a> <span class="link-das"> </span></li>
+              <li>A.&nbsp;R. Damanpack, André Sousa, and M. Bodaghi. 2021. Porous PLAs with Controllable Density by FDM 3D Printing and Chemical Foaming Agent. <em><em>Micromachines</em></em> 12, 8 (Aug. 2021). <a class="link-inline force-break" href="https://doi.org/10.3390/MI12080866">https://doi.org/10.3390/MI12080866</a> Publisher: Multidisciplinary Digital Publishing Institute (MDPI). <span class="link-das"> </span></li>
+              <li>Mohammadreza&nbsp;Lalegani Dezaki, Mahdi Bodaghi, Ahmad Serjouei, Shukri Afazov, and Ali Zolfagharian. 2022. Soft Pneumatic Actuators with Controllable Stiffness by Bio-inspired Lattice Chambers and FDM 3D Printing. <em><em>Advanced Engineering Materials</em></em> (Dec. 2022). <a class="link-inline force-break" href="https://doi.org/10.1002/ADEM.202200797">https://doi.org/10.1002/ADEM.202200797</a> Publisher: John Wiley &amp; Sons, Ltd. <span class="link-das"> </span></li>
+              <li>Jack Forman, Mustafa&nbsp;Doga Dogan, Hamilton Forsythe, and Hiroshi Ishii. 2020. DefeXtiles: 3D Printing Quasi-Woven Fabric via Under-Extrusion. In <em>Proceedings of the 33rd Annual ACM Symposium on User Interface Software and Technology</em>. ACM, 1222–1233. <a class="link-inline force-break" href="https://doi.org/10.1145/3379337.3415876">https://doi.org/10.1145/3379337.3415876</a> <span class="link-das"> </span></li>
+              <li>A. García-Collado, J.&nbsp;M. Blanco, Munish&nbsp;Kumar Gupta, and R. Dorado-Vicente. 2022. Advances in polymers based Multi-Material Additive-Manufacturing Techniques: State-of-art review on properties and applications. <em><em>Additive Manufacturing</em></em> 50 (Feb. 2022), 102577. <a class="link-inline force-break" href="https://doi.org/10.1016/j.addma.2021.102577">https://doi.org/10.1016/j.addma.2021.102577</a> Publisher: Elsevier. <span class="link-das"> </span></li>
+              <li>Anthony Garland and Georges Fadel. 2015. Manufacturing Functionally Gradient Material Objects With an Off the Shelf 3D Printer: Challenges and Solutions. In <em>Volume 4: 20th Design for Manufacturing and the Life Cycle Conference; 9th International Conference on Micro- and Nanosystems</em>, Vol.&nbsp;4. American Society of Mechanical Engineers. <a class="link-inline force-break" href="https://doi.org/10.1115/DETC2015-47841">https://doi.org/10.1115/DETC2015-47841</a> Issue: 11. <span class="link-das"> </span></li>
+              <li>B. Hill, Th. Roger, and F.&nbsp;W. Vorhagen. 1997. Comparative analysis of the quantization of color spaces on the basis of the CIELAB color-difference formula. <em><em>ACM Transactions on Graphics</em></em> 16, 2 (April 1997), 109–154. <a class="link-inline force-break" href="https://doi.org/10.1145/248210.248212">https://doi.org/10.1145/248210.248212</a> <span class="link-das"> </span></li>
+              <li>Karun Kalia, Benjamin Francoeur, Alireza Amirkhizi, and Amir Ameli. 2022. In Situ Foam 3D Printing of Microcellular Structures Using Material Extrusion Additive Manufacturing. <em><em>ACS Applied Materials &amp; Interfaces</em></em> 14, 19 (May 2022), 22454–22465. <a class="link-inline force-break" href="https://doi.org/10.1021/acsami.2c03014">https://doi.org/10.1021/acsami.2c03014</a> Publisher: American Chemical Society. <span class="link-das"> </span></li>
+              <li>Jivtesh&nbsp;B Khurana, Shantanab Dinda, and Timothy&nbsp;W Simpson. 2017. Active - Z printing: A new approach to increasing 3D printed part strength. In <em>Solid Freeform Fabrication 2017: Proceedings of the 28th Annual International Solid Freeform Fabrication Symposium - An Additive Manufacturing Conference, SFF 2017</em>. 1627–1644. <span class="link-das"> </span></li>
+              <li>Tim Kuipers, Eugeni Doubrovski, and Jouke Verlinden. 2017. 3D hatching: linear halftoning for dual extrusion fused deposition modeling. In <em>Proceedings of the 1st Annual ACM Symposium on Computational Fabrication</em>(<em>SCF ’17</em>). Association for Computing Machinery, New York, NY, USA, 1–7. <a class="link-inline force-break" href="https://doi.org/10.1145/3083157.3083163">https://doi.org/10.1145/3083157.3083163</a> <span class="link-das"> </span></li>
+              <li>Nahyun Kwon, Himani Deshpande, Md&nbsp;Kamrul Hasan, Aryabhat Darnal, and Jeeeun Kim. 2021. Multi-ttach: Techniques to Enhance Multi-material Attachments in Low-cost FDM 3D Printing. In <em>Proceedings of the 6th Annual ACM Symposium on Computational Fabrication</em>(<em>SCF ’21</em>). Association for Computing Machinery, New York, NY, USA, 1–16. <a class="link-inline force-break" href="https://doi.org/10.1145/3485114.3485116">https://doi.org/10.1145/3485114.3485116</a> <span class="link-das"> </span></li>
+              <li>Gierad Laput, Xiang&nbsp;’Anthony’ Chen, and Chris Harrison. 2015. 3D Printed Hair: Fused Deposition Modeling of Soft Strands, Fibers, and Bristles. In <em>Proceedings of the 28th Annual ACM Symposium on User Interface Software &amp; Technology</em>(<em>UIST ’15</em>). Association for Computing Machinery, New York, NY, USA, 593–597. <a class="link-inline force-break" href="https://doi.org/10.1145/2807442.2807484">https://doi.org/10.1145/2807442.2807484</a> <span class="link-das"> </span></li>
+              <li>Eammon Littler, Bo Zhu, and Wojciech Jarosz. 2022. Automated Filament Inking for Multi-color FFF 3D Printing. In <em>Proceedings of the 35th Annual ACM Symposium on User Interface Software and Technology</em>(<em>UIST ’22</em>). Association for Computing Machinery, New York, NY, USA, 1–13. <a class="link-inline force-break" href="https://doi.org/10.1145/3526113.3545654">https://doi.org/10.1145/3526113.3545654</a> <span class="link-das"> </span></li>
+              <li>Qian Lu, Aryabhat Darnal, Haruki Takahashi, Anastasia&nbsp;Hanifah Muliana, and Jeeeun Kim. 2022. User-Centered Property Adjustment with Programmable Filament. In <em>Extended Abstracts of the 2022 CHI Conference on Human Factors in Computing Systems</em>(<em>CHI EA ’22</em>). Association for Computing Machinery, New York, NY, USA, 1–6. <a class="link-inline force-break" href="https://doi.org/10.1145/3491101.3519864">https://doi.org/10.1145/3491101.3519864</a> <span class="link-das"> </span></li>
+              <li>Kongpyung&nbsp;(Justin) Moon, Jaeseong Yi, Valkyrie Savage, and Andrea Bianchi. 2024. 3D printed pyrography: Using wood filament and dynamic control of nozzle temperature for embedding shades of color in objects. <em><em>Additive Manufacturing</em></em> 83 (March 2024), 104064. <a class="link-inline force-break" href="https://doi.org/10.1016/j.addma.2024.104064">https://doi.org/10.1016/j.addma.2024.104064</a></li>
+              <li>Stefanie Mueller, Sangha Im, Serafima Gurevich, Alexander Teibrich, Lisa Pfisterer, François Guimbretière, and Patrick Baudisch. 2014. WirePrint: 3D printed previews for fast prototyping. In <em>Proceedings of the 27th annual ACM symposium on User interface software and technology</em>(<em>UIST ’14</em>). Association for Computing Machinery, New York, NY, USA, 273–280. <a class="link-inline force-break" href="https://doi.org/10.1145/2642918.2647359">https://doi.org/10.1145/2642918.2647359</a> <span class="link-das"> </span></li>
+              <li>Mohammadreza Nofar, Julia Utz, Nico Geis, Volker Altstädt, and Holger Ruckdäschel. 2022. Foam 3D Printing of Thermoplastics: A Symbiosis of Additive Manufacturing and Foaming Technology. <em><em>Advanced Science</em></em> 9, 11 (April 2022), 2105701. <a class="link-inline force-break" href="https://doi.org/10.1002/ADVS.202105701">https://doi.org/10.1002/ADVS.202105701</a> Publisher: John Wiley &amp; Sons, Ltd.      </li>
+              <li>Mehmet Ozdemir and Zjenja Doubrovski. 2023. Xpandables: Single-filament Multi-property 3D Printing by Programmable Foaming. In <em>Extended Abstracts of the 2023 CHI Conference on Human Factors in Computing Systems</em>(<em>CHI EA ’23</em>). Association for Computing Machinery, New York, NY, USA, 1–7. <a class="link-inline force-break" href="https://doi.org/10.1145/3544549.3585731">https://doi.org/10.1145/3544549.3585731</a> <span class="link-das"> </span></li>
+              <li>Mehmet Ozdemir and Zjenja Doubrovski. 2024. Foam2Form: 4D Printing with Programmable Foaming. In <em>Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems</em>(<em>CHI EA ’24</em>). Association for Computing Machinery, New York, NY, USA, 1–8. <a class="link-inline force-break" href="https://doi.org/10.1145/3613905.3650869">https://doi.org/10.1145/3613905.3650869</a> <span class="link-das"> </span></li>
+              <li>Ajinkya Pawar, Gilles Ausias, Yves&nbsp;Marie Corre, Yves Grohens, and Julien Férec. 2022. Mastering the density of 3D printed thermoplastic elastomer foam structures with controlled temperature. <em><em>Additive Manufacturing</em></em> 58 (Oct. 2022), 103066. <a class="link-inline force-break" href="https://doi.org/10.1016/J.ADDMA.2022.103066">https://doi.org/10.1016/J.ADDMA.2022.103066</a> Publisher: Elsevier.
+              </li>
+              <li>Lucas Pereira, Todd Letcher, and Gregory&nbsp;J. Michna. 2019. The Effects of 3D Printing Parameters and Surface Roughness on Convective Heat Transfer Performance. American Society of Mechanical Engineers Digital Collection. <a class="link-inline force-break" href="https://doi.org/10.1115/HT2019-3591">https://doi.org/10.1115/HT2019-3591</a> <span class="link-das"> </span></li>
+              <li>Kumaresan Rajan, Mahendran Samykano, Kumaran Kadirgama, Wan Sharuzi, Wan Harun, and Md&nbsp;Mustafizur Rahman. 2022. Fused deposition modeling: process, materials, parameters, properties, and applications. <em><em>The International Journal of Advanced Manufacturing Technology 2022</em></em> (Feb. 2022), 1–40. <a class="link-inline force-break" href="https://doi.org/10.1007/S00170-022-08860-7">https://doi.org/10.1007/S00170-022-08860-7</a> ISBN: 0123456789 Publisher: Springer. <span class="link-das"> </span></li>
+              <li>Tim Reiner, Nathan Carr, Radomír Měch, Ondřej Št'ava, Carsten Dachsbacher, and Gavin Miller. 2014. Dual-color mixing for fused deposition modeling printers. <em><em>Computer Graphics Forum</em></em> 33, 2 (2014), 479–486. <a class="link-inline force-break" href="https://doi.org/10.1111/cgf.12319">https://doi.org/10.1111/cgf.12319</a> _eprint: <a class="link-inline force-break" href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.12319">https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.12319</a>. <span class="link-das"> </span></li>
+              <li>Haichuan Song, Jonàs Martínez, Pierre Bedell, Noémie Vennin, and Sylvain Lefebvre. 2019. Colored Fused Filament Fabrication. <em><em>ACM Transactions on Graphics</em></em> 38, 5 (June 2019), 141:1–141:11. <a class="link-inline force-break" href="https://doi.org/10.1145/3183793">https://doi.org/10.1145/3183793</a> <span class="link-das"> </span></li>
+              <li>Lingyun Sun, Yue Yang, Yu Chen, Jiaji Li, Danli Luo, Haolin Liu, Lining Yao, Ye Tao, and Guanyun Wang. 2021. ShrinCage: 4D Printing Accessories that Self-Adapt. In <em>Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems</em>. ACM, New York, NY, USA, 1–12. <a class="link-inline force-break" href="https://doi.org/10.1145/3411764.3445220">https://doi.org/10.1145/3411764.3445220</a> <span class="link-das"> </span></li>
+              <li>Yuxuan Sun, Wei Tian, Tao Zhang, Peng Chen, and Mujun Li. 2020. Strength and toughness enhancement in 3d printing via bioinspired tool path. <em><em>Materials &amp; Design</em></em> 185 (Jan. 2020), 108239. <a class="link-inline force-break" href="https://doi.org/10.1016/j.matdes.2019.108239">https://doi.org/10.1016/j.matdes.2019.108239</a> <span class="link-das"> </span></li>
+              <li>Haruki Takahashi and Homei Miyashita. 2017. Expressive Fused Deposition Modeling by Controlling Extruder Height and Extrusion Amount. In <em>Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems</em>(<em>CHI ’17</em>). Association for Computing Machinery, New York, NY, USA, 5065–5074. <a class="link-inline force-break" href="https://doi.org/10.1145/3025453.3025933">https://doi.org/10.1145/3025453.3025933</a> <span class="link-das"> </span></li>
+              <li>Haruki Takahashi, Parinya Punpongsanon, and Jeeeun Kim. 2020. Programmable Filament: Printed Filaments for Multi-material 3D Printing. In <em>Proceedings of the 33rd Annual ACM Symposium on User Interface Software and Technology</em>(<em>UIST ’20</em>). Association for Computing Machinery, New York, NY, USA, 1209–1221. <a class="link-inline force-break" href="https://doi.org/10.1145/3379337.3415863">https://doi.org/10.1145/3379337.3415863</a> <span class="link-das"> </span></li>
+              <li>Riccardo Tonello, Md.&nbsp;Tusher Mollah, Kenneth Weiss, Jon Spangenberg, Are Strandlie, David&nbsp;Bue Pedersen, and Jeppe&nbsp;Revall Frisvad. 2024. Influence of the Printing Direction on the Surface Appearance in Multi-material Fused Filament Fabrication. In <em>Computer-Aided Design and Computer Graphics</em>, Shi-Min Hu, Yiyu Cai, and Paul Rosin (Eds.). Springer Nature, Singapore, 90–107. <a class="link-inline force-break" href="https://doi.org/10.1007/978-981-99-9666-7_7">https://doi.org/10.1007/978-981-99-9666-7_7</a></li>
+              <li>Lucie Trhlíková, Oldrich Zmeskal, Petr Psencik, and Pavel Florian. 2016. Study of the thermal properties of filaments for 3D printing. <em><em>AIP Conference Proceedings</em></em> 1752, 1 (July 2016), 040027. <a class="link-inline force-break" href="https://doi.org/10.1063/1.4955258">https://doi.org/10.1063/1.4955258</a> <span class="link-das"> </span></li>
+              <li>Mark Wheadon. 2017. Velocity Painting. <a class="link-inline force-break" href="https://www.velocitypainting.xyz/blog/">https://www.velocitypainting.xyz/blog/</a> <span class="link-das"> </span></li>
+            </ol>
+			  
+          </div>
+        </div>
+      </div>
+    </section>
+<hr>
+  <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-left">
+            <h3>Footnote</h3>
+          <p id="fn1">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn1"><sup>1</sup></a>
+    <a class="link-inline force-break" href="https://www.mosaicmfg.com/products/palette-3-pro">https://www.mosaicmfg.com/products/palette-3-pro</a>
+  </p>
+  <p id="fn2">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn2"><sup>2</sup></a>
+    <a class="link-inline force-break" href="https://colorfabb.com/lw-pla-black">https://colorfabb.com/lw-pla-black</a>
+  </p>
+  <p id="fn3">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn3"><sup>3</sup></a>
+    <a class="link-inline force-break" href="https://colorfabb.com/woodfill">https://colorfabb.com/woodfill</a>
+  </p>
+  <p id="fn4">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn4"><sup>4</sup></a>
+    <a class="link-inline force-break" href="https://colorfabb.com/corkfill">https://colorfabb.com/corkfill</a>
+  </p>
+  <p id="fn5">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn5"><sup>5</sup></a>
+    <a class="link-inline force-break" href="https://github.com/zjenjad/speed-modulated-ironing">https://github.com/zjenjad/speed-modulated-ironing</a>
+  </p>
+  <p id="fn6">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn6"><sup>6</sup></a>
+    <a class="link-inline force-break" href="https://ultimaker.com/software/ultimaker-cura/">https://ultimaker.com/software/ultimaker-cura/</a>
+  </p>
+  <p id="fn7">
+    <a href="https://camps.aptaracorp.com/ACM_PMS/PMS/ACM/UIST24/133/30eab023-42a6-11ef-ada9-16bb50361d1f/OUT/uist24-133.html#foot-fn7"><sup>7</sup></a>Owl Ornament Statue 3D Scan by 3DRstudio <a class="link-inline force-break" href="https://sketchfab.com/3d-models/owl-ornament-statue-3d-scan-a2ef1344af5143b9b0a214f969640a15">https://sketchfab.com/3d-models/owl-ornament-statue-3d-scan-a2ef1344af5143b9b0a214f969640a15</a>
+  </p>
+          </div>
+        </div>
+      </div>
+    </section>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="file:///html_resources/js/jquery-3.4.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="file:///html_resources/js/popper.min.js"></script>
+    <script src="file:///html_resources/js/bootstrap-4.4.1.js"></script>
+  </body>
+</html>
